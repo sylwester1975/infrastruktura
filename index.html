@@ -9,7 +9,29 @@
             padding: 0;
             background-color: white;
             text-align: center; /* Startowe wyśrodkowanie */
+            font-family: sans-serif;
         }
+        /* Styl dla paska z przyciskiem */
+        .download-container {
+            padding: 15px;
+            background: #f4f4f4;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        /* Wygląd przycisku pobierania */
+        .btn-download {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-download:hover {
+            background-color: #218838;
+        }
+
         img {
             max-width: 100%;
             height: auto;
@@ -27,7 +49,13 @@
 </head>
 <body>
 
-    <!-- Nazwa pliku zmieniona na: infrastruktura-kdp-i-droga-s10-plock-2026.webp -->
+    <!-- Sekcja z przyciskiem pobierania dla WebP -->
+    <div class="download-container">
+        <a href="kdp-i-droga-s10-plock-2026.webp" download="Mapa-S10-KDP-Plock.webp" class="btn-download">
+            Pobierz mapę (WebP)
+        </a>
+    </div>
+
     <img src="kdp-i-droga-s10-plock-2026.webp" 
          id="mapaS10" 
          onclick="toggleZoom()" 
