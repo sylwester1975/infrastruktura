@@ -2,31 +2,37 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa S10 i KDP Płock 2026</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: white;
-            text-align: center; /* Startowe wyśrodkowanie */
+            text-align: center;
             font-family: sans-serif;
         }
-        /* Styl dla paska z przyciskiem */
-        .download-container {
-            padding: 15px;
-            background: #f4f4f4;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 10px;
-        }
-        /* Wygląd przycisku pobierania */
-        .btn-download {
-            display: inline-block;
+        /* Pasek górny z przyciskiem po prawej */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end; /* Przycisk do prawej */
+            align-items: center;
             padding: 10px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            position: sticky; /* Pasek zostaje na górze przy przewijaniu */
+            top: 0;
+            z-index: 1000;
+        }
+        .btn-download {
+            padding: 6px 14px;
             background-color: #28a745;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            font-size: 13px;
             font-weight: bold;
+            transition: background 0.2s;
         }
         .btn-download:hover {
             background-color: #218838;
@@ -38,6 +44,7 @@
             display: inline-block;
             vertical-align: top;
             cursor: zoom-in;
+            margin-top: 10px;
         }
         img.zoomed {
             max-width: none;
@@ -49,10 +56,10 @@
 </head>
 <body>
 
-    <!-- Sekcja z przyciskiem pobierania dla WebP -->
-    <div class="download-container">
+    <!-- Profesjonalny pasek narzędziowy -->
+    <div class="top-bar">
         <a href="kdp-i-droga-s10-plock-2026.webp" download="Mapa-S10-KDP-Plock.webp" class="btn-download">
-            Pobierz mapę (WebP)
+            Pobierz WebP
         </a>
     </div>
 
@@ -67,7 +74,6 @@
             const img = document.getElementById('mapaS10');
             img.classList.toggle('zoomed');
             
-            // Wymuszenie lewej krawędzi przy powiększeniu dla łatwiejszego przeglądania
             if (img.classList.contains('zoomed')) {
                 document.body.style.textAlign = 'left';
             } else {
