@@ -10,32 +10,40 @@
             padding: 0;
             background-color: white;
             text-align: center;
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        /* Pasek górny z przyciskiem po prawej */
+        /* Nowoczesny pasek górny */
         .top-bar {
             display: flex;
-            justify-content: flex-end; /* Przycisk do prawej */
+            justify-content: space-between; /* Tytuł po lewej, przycisk po prawej */
             align-items: center;
-            padding: 10px 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-            position: sticky; /* Pasek zostaje na górze przy przewijaniu */
+            padding: 12px 24px;
+            background: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+            position: sticky;
             top: 0;
             z-index: 1000;
         }
+        /* Styl tytułu po lewej */
+        .bar-title {
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        /* Ciemny, profesjonalny przycisk */
         .btn-download {
-            padding: 6px 14px;
-            background-color: #28a745;
+            padding: 8px 16px;
+            background-color: #24292e; /* Ciemny antracyt */
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 500;
             transition: background 0.2s;
         }
         .btn-download:hover {
-            background-color: #218838;
+            background-color: #444d56; /* Jaśniejszy szary po najechaniu */
         }
 
         img {
@@ -44,7 +52,7 @@
             display: inline-block;
             vertical-align: top;
             cursor: zoom-in;
-            margin-top: 10px;
+            margin-top: 20px;
         }
         img.zoomed {
             max-width: none;
@@ -56,8 +64,11 @@
 </head>
 <body>
 
-    <!-- Profesjonalny pasek narzędziowy dla wersji PNG -->
     <div class="top-bar">
+        <!-- Tytuł mapy po lewej -->
+        <div class="bar-title">S10 i KDP Płock 2026</div>
+        
+        <!-- Ciemny przycisk pobierania po prawej -->
         <a href="kdp-i-droga-s10-plock-2026.png" download="Mapa-S10-KDP-Plock.png" class="btn-download">
             Pobierz mapę (PNG)
         </a>
