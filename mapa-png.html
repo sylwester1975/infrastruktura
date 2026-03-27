@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa S10 i KDP Płock 2026</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            text-align: center; /* Startowe wyśrodkowanie */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+            vertical-align: top;
+            cursor: zoom-in;
+        }
+        img.zoomed {
+            max-width: none;
+            display: block;
+            margin: 0;
+            cursor: zoom-out;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nazwa pliku zmieniona na: infrastruktura-kdp-i-droga-s10-plock-2026.webp -->
+    <img src="kdp-i-droga-s10-plock-2026.png" 
+         id="mapaS10" 
+         onclick="toggleZoom()" 
+         alt="Mapa infrastruktury KDP i drogi S10 w Płocku 2026" 
+         decoding="async">
+
+    <script>
+        function toggleZoom() {
+            const img = document.getElementById('mapaS10');
+            img.classList.toggle('zoomed');
+            
+            // Wymuszenie lewej krawędzi przy powiększeniu dla łatwiejszego przeglądania
+            if (img.classList.contains('zoomed')) {
+                document.body.style.textAlign = 'left';
+            } else {
+                document.body.style.textAlign = 'center';
+            }
+        }
+    </script>
+
+</body>
+</html>
