@@ -10,7 +10,7 @@
             padding: 0;
             background-color: white;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            line-height: 0; /* Usuwa szczelinę pod obrazem */
+            /* Usunięto line-height: 0 z body, by nie psuło scrolla */
         }
 
         /* Pasek górny - Desktop */
@@ -61,10 +61,12 @@
         .btn-download { background-color: #24292e; color: white; }
         .btn-download:hover { background-color: #444d56; }
 
-        /* Kontener i Obraz */
+        /* Kontener i Obraz - Klucz do stabilnego przewijania */
         .map-wrapper {
             text-align: center;
             width: 100%;
+            overflow: auto; /* Pozwala na scrollowanie gigantycznej mapy */
+            line-height: 0; /* Usuwa szczelinę pod obrazem */
         }
 
         img {
@@ -76,6 +78,7 @@
             margin: 0; 
         }
 
+        /* Klasa po powiększeniu - mapa 1:1 */
         img.zoomed {
             max-width: none;
             display: block;
@@ -88,11 +91,11 @@
             .top-bar {
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 10px 15px; /* Odchudzone marginesy */
+                padding: 10px 15px;
                 gap: 10px;
             }
             .title {
-                font-size: 13px; /* Nieco mniejszy font tytułu */
+                font-size: 13px;
             }
             .button-group {
                 width: 100%;
@@ -100,8 +103,8 @@
             .btn {
                 flex: 1;
                 justify-content: center;
-                padding: 7px 10px; /* Odchudzone przyciski w pionie */
-                font-size: 12px;   /* Mniejszy tekst na telefonie */
+                padding: 7px 10px;
+                font-size: 12px;
             }
         }
 
@@ -137,10 +140,10 @@
         </div>
     </div>
 
-    <div class="map-wrapper">
+    <div class="map-wrapper" id="mapWrapper">
         <img src="kdp-i-droga-s10-plock-2026.png" 
              id="mapaS10" 
-             onclick="toggleZoom()" 
+             onclick="toggleZoom(event)" 
              alt="Mapa infrastruktury KDP i drogi S10 w regionie Płocka" 
              decoding="async">
     </div>
@@ -148,9 +151,29 @@
     <div id="toast">Link skopiowany do schowka!</div>
 
     <script>
-        function toggleZoom() {
+        function toggleZoom(event) {
             const img = document.getElementById('mapaS10');
-            img.classList.toggle('zoomed');
+            const wrapper = document.getElementById('mapWrapper');
+            const isZoomingIn = !img.classList.contains('zoomed');
+
+            if (isZoomingIn) {
+                // 1. Obliczamy gdzie kliknięto w ujęciu procentowym (0-1)
+                const rect = img.getBoundingClientRect();
+                const xPercent = (event.clientX - rect.left) / rect.width;
+                const yPercent = (event.clientY - rect.top) / rect.height;
+
+                // 2. Aktywujemy powiększenie
+                img.classList.add('zoomed');
+
+                // 3. Przesuwamy widok na gigantycznej mapie (naturalWidth/naturalHeight)
+                // Centrujemy kliknięty punkt odejmując połowę szerokości okna
+                wrapper.scrollLeft = (xPercent * img.naturalWidth) - (window.innerWidth / 2);
+                wrapper.scrollTop = (yPercent * img.naturalHeight) - (window.innerHeight / 2);
+            } else {
+                img.classList.remove('zoomed');
+                // Opcjonalnie: wróć na górę po wyjściu z zoomu
+                window.scrollTo(0, 0);
+            }
         }
 
         function copyLink() {
