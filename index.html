@@ -8,14 +8,14 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: white;
-            text-align: center;
+            background-color: #f6f8fa;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            /* Usunięcie domyślnego wyrównania tekstu stąd */
         }
-        /* Pasek górny - teraz z tytułem i przyciskami */
+
         .top-bar {
             display: flex;
-            justify-content: space-between; /* Tytuł na lewo, przyciski na prawo */
+            justify-content: space-between;
             align-items: center;
             padding: 12px 24px;
             background: #ffffff;
@@ -29,7 +29,6 @@
             font-size: 14px;
             font-weight: 600;
             color: #24292e;
-            margin: 0;
         }
 
         .button-group {
@@ -37,50 +36,52 @@
             gap: 8px;
         }
 
-        /* Styl Twoich przycisków */
         .btn {
             padding: 8px 16px;
             text-decoration: none;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 500;
-            transition: background 0.2s;
             cursor: pointer;
             border: 1px solid #24292e;
+            display: inline-flex;
+            align-items: center;
         }
 
-        .btn-copy {
-            background-color: white;
-            color: #24292e;
-        }
-        .btn-copy:hover {
-            background-color: #f6f8fa;
-        }
+        .btn-copy { background-color: white; color: #24292e; }
+        .btn-download { background-color: #24292e; color: white; }
 
-        .btn-download {
-            background-color: #24292e;
-            color: white;
-        }
-        .btn-download:hover {
-            background-color: #444d56;
+        /* Kontener obrazu - KLUCZ DO WYPOŚRODKOWANIA */
+        .map-wrapper {
+            text-align: center; /* Tu centrujemy obrazek w stanie spoczynku */
+            width: 100%;
         }
 
         img {
             max-width: 100%;
             height: auto;
-            display: inline-block;
-            vertical-align: top;
             cursor: zoom-in;
             margin-top: 20px;
-        }
-        img.zoomed {
-            max-width: none;
-            display: block;
-            margin: 0;
-            cursor: zoom-out;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: inline-block; /* Obrazek zachowuje się jak element tekstowy do wycentrowania */
         }
 
-        /* Prosty toast */
+        /* STYL PO POWIĘKSZENIU */
+        img.zoomed {
+            max-width: none;
+            display: block; /* Zmiana na block wymusza start od lewej strony kontenera */
+            margin: 0;      /* Usuwamy marginesy, by obrazek dotykał krawędzi (0,0) */
+            cursor: zoom-out;
+            box-shadow: none;
+        }
+
+        @media (max-width: 600px) {
+            .top-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .button-group { width: 100%; }
+            .btn { flex: 1; justify-content: center; }
+        }
+
         #toast {
             position: fixed;
             bottom: 20px;
@@ -88,8 +89,8 @@
             transform: translateX(-50%);
             background: #24292e;
             color: white;
-            padding: 8px 16px;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 30px;
             font-size: 12px;
             display: none;
         }
@@ -107,11 +108,13 @@
         </div>
     </div>
 
-    <img src="kdp-i-droga-s10-plock-2026.webp" 
-         id="mapaS10" 
-         onclick="toggleZoom()" 
-         alt="Mapa infrastruktury KDP i drogi S10 w Płocku 2026" 
-         decoding="async">
+    <!-- Dodatkowy kontener ułatwiający sterowanie pozycją -->
+    <div class="map-wrapper">
+        <img src="kdp-i-droga-s10-plock-2026.webp" 
+             id="mapaS10" 
+             onclick="toggleZoom()" 
+             alt="Mapa infrastruktury KDP i drogi S10 w Płocku 2026">
+    </div>
 
     <div id="toast">Link skopiowany!</div>
 
@@ -120,11 +123,8 @@
             const img = document.getElementById('mapaS10');
             img.classList.toggle('zoomed');
             
-            if (img.classList.contains('zoomed')) {
-                document.body.style.textAlign = 'left';
-            } else {
-                document.body.style.textAlign = 'center';
-            }
+            // Usunęliśmy stąd zmianę stylu body, bo CSS (.zoomed { display: block }) 
+            // załatwia teraz sprawę wyrównania do lewej automatycznie.
         }
 
         function copyLink() {
@@ -137,3 +137,4 @@
 
 </body>
 </html>
+
