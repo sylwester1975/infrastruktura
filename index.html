@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa S10 i KDP Płock 2026</title>
+    <title>Mapa KDP i drogi S10 w regionie Płocka</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -48,15 +48,14 @@
         .btn-copy { background: white; color: var(--text-dark); }
         .btn-download { background: #24292e; color: white; border: none; }
 
-        /* KONTENER: Klucz do braku przycinania */
         .map-container {
             flex: 1;
-            overflow: auto; /* Pojawią się paski przewijania, jeśli mapa będzie za duża */
+            overflow: auto; 
             display: flex;
-            justify-content: center; /* Centrowanie w pionie/poziomie, gdy mapa jest mała */
-            align-items: center; 
+            justify-content: center; 
+            align-items: flex-start; 
             padding: 20px;
-            scroll-behavior: smooth; /* Płynne przesuwanie do punktu kliknięcia */
+            scroll-behavior: smooth;
         }
 
         img {
@@ -66,12 +65,13 @@
             cursor: zoom-in;
             background: white;
             display: block;
+            margin-top: 20px;
         }
 
-        /* POWIĘKSZENIE: Zmieniamy szerokość na sztywną dużą wartość */
         img.zoomed {
-            max-width: 250%; /* Lub konkretna szerokość w px, np. 3000px */
+            max-width: 250%; 
             cursor: zoom-out;
+            margin-top: 0;
         }
 
         #toast {
@@ -94,30 +94,30 @@
 
     <div class="top-bar">
         <button class="btn btn-copy" onclick="copyToClipboard()">🔗 Kopiuj link</button>
-        <a href="kdp-i-droga-s10-plock-2026.webp" download class="btn btn-download">Pobierz mapę</a>
+        <a href="kdp-i-droga-s10-plock-2026.png" download="Mapa-KDP-S10-Plock.png" class="btn btn-download">Pobierz PNG</a>
     </div>
 
     <div class="map-container" id="scrollContainer">
-        <img src="kdp-i-droga-s10-plock-2026.webp" id="mapaS10" onclick="toggleZoom(event)" alt="Mapa S10 KDP">
+        <img src="kdp-i-droga-s10-plock-2026.png" 
+             id="mapaPng" 
+             onclick="toggleZoom(event)" 
+             alt="Mapa KDP i drogi S10 w regionie Płocka">
     </div>
 
     <div id="toast">Link skopiowany do schowka!</div>
 
     <script>
         function toggleZoom(event) {
-            const img = document.getElementById('mapaS10');
+            const img = document.getElementById('mapaPng');
             const container = document.getElementById('scrollContainer');
             
             if (!img.classList.contains('zoomed')) {
-                // 1. Zapamiętujemy, gdzie kliknął użytkownik (procentowo)
                 const rect = img.getBoundingClientRect();
                 const offsetX = (event.clientX - rect.left) / rect.width;
                 const offsetY = (event.clientY - rect.top) / rect.height;
 
-                // 2. Powiększamy
                 img.classList.add('zoomed');
 
-                // 3. Przesuwamy scroll kontenera dokładnie w to miejsce (po krótkiej chwili na przeliczenie)
                 setTimeout(() => {
                     container.scrollLeft = (img.offsetWidth * offsetX) - (container.offsetWidth / 2);
                     container.scrollTop = (img.offsetHeight * offsetY) - (container.offsetHeight / 2);
@@ -137,4 +137,3 @@
     </script>
 </body>
 </html>
-
