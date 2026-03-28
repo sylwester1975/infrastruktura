@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Mapa KDP i drogi S10 w regionie Płocka</title>
     <style>
         body {
@@ -10,6 +10,7 @@
             padding: 0;
             background-color: white;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden; /* Blokujemy scroll body, by działał tylko wewnątrz mapy */
         }
 
         /* Pasek górny */
@@ -23,7 +24,8 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            line-height: normal;
+            height: 60px;
+            box-sizing: border-box;
         }
         
         .title {
@@ -60,13 +62,14 @@
         .btn-download { background-color: #24292e; color: white; }
         .btn-download:hover { background-color: #444d56; }
 
-        /* Kontener mapy */
+        /* Kontener mapy - zajmuje całą resztę ekranu */
         .map-wrapper {
-            text-align: center;
             width: 100%;
-            overflow: auto; /* Kluczowe dla przewijania giganta */
-            line-height: 0;
-            -webkit-overflow-scrolling: touch; /* Płynne przewijanie na iOS */
+            height: calc(100vh - 60px); /* Wysokość ekranu minus pasek */
+            overflow: auto;
+            text-align: center;
+            background-color: white;
+            -webkit-overflow-scrolling: touch; /* Płynny scroll na iOS */
         }
 
         img {
@@ -75,10 +78,10 @@
             display: inline-block;
             vertical-align: top;
             cursor: zoom-in;
-            margin: 0; 
+            margin: 0;
         }
 
-        /* Stan powiększony */
+        /* Stan powiększony 1:1 */
         img.zoomed {
             max-width: none;
             display: block;
@@ -86,13 +89,18 @@
             cursor: zoom-out;
         }
 
-        /* Responsywność mobilna */
+        /* Wersja mobilna */
         @media (max-width: 650px) {
             .top-bar {
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 10px 15px;
                 gap: 10px;
+                height: auto; /* Pozwalamy paskowi rosnąć w pionie na telefonie */
+            }
+            .map-wrapper {
+                height: auto; /* Dynamiczne dopasowanie na telefonie */
+                flex: 1;
             }
             .title { font-size: 13px; }
             .button-group { width: 100%; }
@@ -147,29 +155,26 @@
             const isZoomingIn = !img.classList.contains('zoomed');
 
             if (isZoomingIn) {
-                // Pobieramy pozycję kliknięcia/dotknięcia względem obrazka (w %)
+                // 1. Obliczamy pozycję kliknięcia względem OBECNEGO rozmiaru obrazka (w %)
                 const rect = img.getBoundingClientRect();
-                const offsetX = event.pageX - (rect.left + window.pageXOffset);
-                const offsetY = event.pageY - (rect.top + window.pageYOffset);
-                
-                const xPercent = offsetX / rect.width;
-                const yPercent = offsetY / rect.height;
+                const xPercent = (event.clientX - rect.left) / rect.width;
+                const yPercent = (event.clientY - rect.top) / rect.height;
 
-                // Aktywujemy zoom
+                // 2. Aktywujemy zoom
                 img.classList.add('zoomed');
 
-                // Krótkie opóźnienie, aby przeglądarka przeliczyła nowe wymiary obrazu (naturalWidth)
-                setTimeout(() => {
-                    const fullWidth = img.naturalWidth;
-                    const fullHeight = img.naturalHeight;
-
-                    // Precyzyjne centrowanie widoku
-                    wrapper.scrollLeft = (xPercent * fullWidth) - (window.innerWidth / 2);
-                    wrapper.scrollTop = (yPercent * fullHeight) - (window.innerHeight / 2);
-                }, 10);
+                // 3. Czekamy na przeliczenie nowej geometrii przez przeglądarkę
+                requestAnimationFrame(() => {
+                    // Precyzyjne centrowanie na gigantycznej mapie
+                    // Wykorzystujemy naturalWidth (12600) i naturalHeight (4800)
+                    wrapper.scrollLeft = (xPercent * img.naturalWidth) - (window.innerWidth / 2);
+                    wrapper.scrollTop = (yPercent * img.naturalHeight) - (window.innerHeight / 2);
+                });
             } else {
                 img.classList.remove('zoomed');
-                window.scrollTo(0, 0);
+                // Opcjonalnie: reset pozycji przy powrocie
+                wrapper.scrollLeft = 0;
+                wrapper.scrollTop = 0;
             }
         }
 
