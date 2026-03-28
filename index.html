@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa KDP i drogi S10 w regionie Płocka</title>
+    <title>Mapa S10 i KDP Płock 2026</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;
+            --bg-color: #f6f8fa;
             --text-dark: #24292e;
             --border-color: #d0d7de;
         }
@@ -21,17 +21,21 @@
             height: 100vh;
         }
 
+        /* Pasek górny */
         .top-bar {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-end; /* Przyciski do prawej */
             align-items: center;
             padding: 10px 20px;
             background: #ffffff;
             border-bottom: 1px solid var(--border-color);
-            gap: 10px;
+            gap: 10px; /* Odstęp między przyciskami */
+            position: sticky;
+            top: 0;
             z-index: 1000;
         }
 
+        /* Wspólny styl przycisków */
         .btn {
             padding: 8px 16px;
             font-size: 13px;
@@ -45,35 +49,49 @@
             border: 1px solid var(--border-color);
         }
 
-        .btn-copy { background: white; color: var(--text-dark); }
-        .btn-download { background: #24292e; color: white; border: none; }
+        /* Przycisk kopiowania - jasny */
+        .btn-copy {
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+        .btn-copy:hover {
+            background-color: #f3f4f6;
+        }
 
+        /* Przycisk pobierania - ciemny/profesjonalny */
+        .btn-download {
+            background-color: #24292e;
+            color: white;
+            border: none;
+        }
+        .btn-download:hover {
+            background-color: #444d56;
+        }
+
+        /* Kontener na mapę z przewijaniem */
         .map-container {
             flex: 1;
-            overflow: auto; 
+            overflow: auto;
             display: flex;
-            justify-content: center; 
-            align-items: flex-start; 
+            justify-content: center;
+            align-items: flex-start;
             padding: 20px;
-            scroll-behavior: smooth;
         }
 
         img {
             max-width: 100%;
             height: auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             cursor: zoom-in;
             background: white;
-            display: block;
-            margin-top: 20px;
         }
 
         img.zoomed {
-            max-width: 250%; 
+            max-width: none;
             cursor: zoom-out;
-            margin-top: 0;
         }
 
+        /* Powiadomienie o skopiowaniu */
         #toast {
             position: fixed;
             bottom: 20px;
@@ -82,8 +100,8 @@
             background: #24292e;
             color: white;
             padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 12px;
+            border-radius: 8px;
+            font-size: 13px;
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
@@ -91,49 +109,3 @@
     </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <button class="btn btn-copy" onclick="copyToClipboard()">🔗 Kopiuj link</button>
-        <a href="kdp-i-droga-s10-plock-2026.png" download="Mapa-KDP-S10-Plock.png" class="btn btn-download">Pobierz PNG</a>
-    </div>
-
-    <div class="map-container" id="scrollContainer">
-        <img src="kdp-i-droga-s10-plock-2026.png" 
-             id="mapaPng" 
-             onclick="toggleZoom(event)" 
-             alt="Mapa KDP i drogi S10 w regionie Płocka">
-    </div>
-
-    <div id="toast">Link skopiowany do schowka!</div>
-
-    <script>
-        function toggleZoom(event) {
-            const img = document.getElementById('mapaPng');
-            const container = document.getElementById('scrollContainer');
-            
-            if (!img.classList.contains('zoomed')) {
-                const rect = img.getBoundingClientRect();
-                const offsetX = (event.clientX - rect.left) / rect.width;
-                const offsetY = (event.clientY - rect.top) / rect.height;
-
-                img.classList.add('zoomed');
-
-                setTimeout(() => {
-                    container.scrollLeft = (img.offsetWidth * offsetX) - (container.offsetWidth / 2);
-                    container.scrollTop = (img.offsetHeight * offsetY) - (container.offsetHeight / 2);
-                }, 10);
-            } else {
-                img.classList.remove('zoomed');
-            }
-        }
-
-        function copyToClipboard() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                const toast = document.getElementById('toast');
-                toast.style.opacity = '1';
-                setTimeout(() => { toast.style.opacity = '0'; }, 2000);
-            });
-        }
-    </script>
-</body>
-</html>
