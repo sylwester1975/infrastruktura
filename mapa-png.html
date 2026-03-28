@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>Mapa KDP i drogi S10 w regionie Płocka</title>
     <style>
         body {
@@ -10,10 +10,9 @@
             padding: 0;
             background-color: white;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            /* Usunięto line-height: 0 z body, by nie psuło scrolla */
         }
 
-        /* Pasek górny - Desktop */
+        /* Pasek górny */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -61,12 +60,13 @@
         .btn-download { background-color: #24292e; color: white; }
         .btn-download:hover { background-color: #444d56; }
 
-        /* Kontener i Obraz - Klucz do stabilnego przewijania */
+        /* Kontener mapy */
         .map-wrapper {
             text-align: center;
             width: 100%;
-            overflow: auto; /* Pozwala na scrollowanie gigantycznej mapy */
-            line-height: 0; /* Usuwa szczelinę pod obrazem */
+            overflow: auto; /* Kluczowe dla przewijania giganta */
+            line-height: 0;
+            -webkit-overflow-scrolling: touch; /* Płynne przewijanie na iOS */
         }
 
         img {
@@ -78,7 +78,7 @@
             margin: 0; 
         }
 
-        /* Klasa po powiększeniu - mapa 1:1 */
+        /* Stan powiększony */
         img.zoomed {
             max-width: none;
             display: block;
@@ -86,7 +86,7 @@
             cursor: zoom-out;
         }
 
-        /* --- DOPRACOWANA WERSJA MOBILNA --- */
+        /* Responsywność mobilna */
         @media (max-width: 650px) {
             .top-bar {
                 flex-direction: column;
@@ -94,21 +94,12 @@
                 padding: 10px 15px;
                 gap: 10px;
             }
-            .title {
-                font-size: 13px;
-            }
-            .button-group {
-                width: 100%;
-            }
-            .btn {
-                flex: 1;
-                justify-content: center;
-                padding: 7px 10px;
-                font-size: 12px;
-            }
+            .title { font-size: 13px; }
+            .button-group { width: 100%; }
+            .btn { flex: 1; justify-content: center; padding: 7px 10px; font-size: 12px; }
         }
 
-        /* Powiadomienie (Toast) */
+        /* Toast */
         #toast {
             position: fixed;
             bottom: 25px;
@@ -120,7 +111,6 @@
             border-radius: 30px;
             font-size: 12px;
             display: none;
-            line-height: normal;
             z-index: 2000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
@@ -157,21 +147,28 @@
             const isZoomingIn = !img.classList.contains('zoomed');
 
             if (isZoomingIn) {
-                // 1. Obliczamy gdzie kliknięto w ujęciu procentowym (0-1)
+                // Pobieramy pozycję kliknięcia/dotknięcia względem obrazka (w %)
                 const rect = img.getBoundingClientRect();
-                const xPercent = (event.clientX - rect.left) / rect.width;
-                const yPercent = (event.clientY - rect.top) / rect.height;
+                const offsetX = event.pageX - (rect.left + window.pageXOffset);
+                const offsetY = event.pageY - (rect.top + window.pageYOffset);
+                
+                const xPercent = offsetX / rect.width;
+                const yPercent = offsetY / rect.height;
 
-                // 2. Aktywujemy powiększenie
+                // Aktywujemy zoom
                 img.classList.add('zoomed');
 
-                // 3. Przesuwamy widok na gigantycznej mapie (naturalWidth/naturalHeight)
-                // Centrujemy kliknięty punkt odejmując połowę szerokości okna
-                wrapper.scrollLeft = (xPercent * img.naturalWidth) - (window.innerWidth / 2);
-                wrapper.scrollTop = (yPercent * img.naturalHeight) - (window.innerHeight / 2);
+                // Krótkie opóźnienie, aby przeglądarka przeliczyła nowe wymiary obrazu (naturalWidth)
+                setTimeout(() => {
+                    const fullWidth = img.naturalWidth;
+                    const fullHeight = img.naturalHeight;
+
+                    // Precyzyjne centrowanie widoku
+                    wrapper.scrollLeft = (xPercent * fullWidth) - (window.innerWidth / 2);
+                    wrapper.scrollTop = (yPercent * fullHeight) - (window.innerHeight / 2);
+                }, 10);
             } else {
                 img.classList.remove('zoomed');
-                // Opcjonalnie: wróć na górę po wyjściu z zoomu
                 window.scrollTo(0, 0);
             }
         }
