@@ -151,7 +151,7 @@
 
     <div id="toast">Link skopiowany do schowka!</div>
 
-    <script>
+<script>
         function toggleZoom(event) {
             const img = document.getElementById('mapaS10');
             const wrapper = document.getElementById('mapWrapper');
@@ -176,16 +176,23 @@
         }
 
         function copyLink() {
-            // Kopiuje aktualny adres URL strony
-            navigator.clipboard.writeText(window.location.href).then(() => {
+            // Tworzymy "czysty" link bez parametrów po znaku zapytania (?)
+            const cleanLink = window.location.origin + window.location.pathname;
+
+            navigator.clipboard.writeText(cleanLink).then(() => {
                 const toast = document.getElementById('toast');
+                
+                // Pokazujemy toast z animacją
                 toast.style.display = 'block';
                 setTimeout(() => { toast.style.opacity = '1'; }, 10);
                 
+                // Ukrywamy toast po 2 sekundach
                 setTimeout(() => { 
                     toast.style.opacity = '0';
                     setTimeout(() => { toast.style.display = 'none'; }, 300);
                 }, 2000);
+            }).catch(err => {
+                console.error('Błąd kopiowania: ', err);
             });
         }
     </script>
