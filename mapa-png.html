@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Mapa KDP i drogi S10 w regionie płockim</title>
+    <title>Mapa KDP i drogi S10 w regionie płockim (PNG)</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: white;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden; /* Blokujemy scroll body, by działał tylko wewnątrz mapy */
+            overflow: hidden;
         }
 
         /* Pasek górny */
@@ -62,14 +62,14 @@
         .btn-download { background-color: #24292e; color: white; }
         .btn-download:hover { background-color: #444d56; }
 
-        /* Kontener mapy - zajmuje całą resztę ekranu */
+        /* Kontener mapy */
         .map-wrapper {
             width: 100%;
-            height: calc(100vh - 60px); /* Wysokość ekranu minus pasek */
+            height: calc(100vh - 60px);
             overflow: auto;
             text-align: center;
             background-color: white;
-            -webkit-overflow-scrolling: touch; /* Płynny scroll na iOS */
+            -webkit-overflow-scrolling: touch;
         }
 
         img {
@@ -96,11 +96,10 @@
                 align-items: flex-start;
                 padding: 10px 15px;
                 gap: 10px;
-                height: auto; /* Pozwalamy paskowi rosnąć w pionie na telefonie */
+                height: auto;
             }
             .map-wrapper {
-                height: auto; /* Dynamiczne dopasowanie na telefonie */
-                flex: 1;
+                height: calc(100vh - 100px);
             }
             .title { font-size: 13px; }
             .button-group { width: 100%; }
@@ -119,6 +118,8 @@
             border-radius: 30px;
             font-size: 12px;
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
             z-index: 2000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
@@ -127,12 +128,13 @@
 <body>
 
     <div class="top-bar">
-        <div class="title">Mapa KDP i drogi S10 w regionie płockim</div>
+        <div class="title">Mapa KDP i drogi S10 w regionie płockim (PNG)</div>
         <div class="button-group">
             <button onclick="copyLink()" class="btn btn-copy">
                 <span>🔗</span> Kopiuj link
             </button>
-            <a href="kdp-i-droga-s10-plock-2026.png" download="Mapa-S10-KDP-Plock.png" class="btn btn-download">
+            <!-- Link do pobrania pliku PNG -->
+            <a href="kdp-i-droga-s10-plock-2026.png" download="kdp-i-droga-s10-plock-2026.png" class="btn btn-download">
                 Pobierz mapę (PNG)
             </a>
         </div>
@@ -155,34 +157,37 @@
             const isZoomingIn = !img.classList.contains('zoomed');
 
             if (isZoomingIn) {
-                // 1. Obliczamy pozycję kliknięcia względem OBECNEGO rozmiaru obrazka (w %)
                 const rect = img.getBoundingClientRect();
                 const xPercent = (event.clientX - rect.left) / rect.width;
                 const yPercent = (event.clientY - rect.top) / rect.height;
 
-                // 2. Aktywujemy zoom
                 img.classList.add('zoomed');
 
-                // 3. Czekamy na przeliczenie nowej geometrii przez przeglądarkę
                 requestAnimationFrame(() => {
-                    // Precyzyjne centrowanie na gigantycznej mapie
-                    // Wykorzystujemy naturalWidth (12600) i naturalHeight (4800)
                     wrapper.scrollLeft = (xPercent * img.naturalWidth) - (window.innerWidth / 2);
                     wrapper.scrollTop = (yPercent * img.naturalHeight) - (window.innerHeight / 2);
                 });
             } else {
                 img.classList.remove('zoomed');
-                // Opcjonalnie: reset pozycji przy powrocie
                 wrapper.scrollLeft = 0;
                 wrapper.scrollTop = 0;
             }
         }
 
         function copyLink() {
-            navigator.clipboard.writeText(window.location.href);
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+            // Kopiuje czysty link bez zbędnych kodów śledzenia
+            const cleanLink = window.location.origin + window.location.pathname;
+            navigator.clipboard.writeText(cleanLink).then(() => {
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                setTimeout(() => { toast.style.opacity = '1'; }, 10);
+                setTimeout(() => { 
+                    toast.style.opacity = '0';
+                    setTimeout(() => { toast.style.display = 'none'; }, 300);
+                }, 2000);
+            }).catch(() => {
+                alert("Link: " + cleanLink);
+            });
         }
     </script>
 
