@@ -60,6 +60,17 @@
         .btn-download { background-color: #24292e; color: white; }
         .btn-download:hover { background-color: #444d56; }
 
+        /* NOWY STYL: Pasek podpowiedzi */
+        #hint-bar {
+            text-align: center;
+            font-size: 12px;
+            color: #444d56;
+            padding: 8px;
+            background: #f6f8fa;
+            border-bottom: 1px solid #eaeaea;
+            user-select: none;
+        }
+
         .map-wrapper {
             width: 100%;
             height: calc(100vh - 60px);
@@ -127,12 +138,14 @@
             <button onclick="copyLink()" class="btn btn-copy">
                 <span>🔗</span> Kopiuj link
             </button>
-            <!-- Powrót do standardowego linku (najbezpieczniejszy na mobilu) -->
             <a href="kdp-i-droga-s10-plock-2026.webp" download="kdp-i-droga-s10-plock-2026.webp" class="btn btn-download">
                 Pobierz mapę (WEBP)
             </a>
         </div>
     </div>
+
+    <!-- DODANY PASEK PODPOWIEDZI -->
+    <div id="hint-bar">💡 Kliknij mapę, aby ją powiększyć</div>
 
     <div class="map-wrapper" id="mapWrapper">
         <img src="kdp-i-droga-s10-plock-2026.webp" 
@@ -146,6 +159,10 @@
 
     <script>
         function toggleZoom(event) {
+            // UKRYWANIE PODPOWIEDZI PO KLIKNIĘCIU
+            const hint = document.getElementById('hint-bar');
+            if (hint) { hint.style.display = 'none'; }
+
             const img = document.getElementById('mapaS10');
             const wrapper = document.getElementById('mapWrapper');
             const isZoomingIn = !img.classList.contains('zoomed');
@@ -169,7 +186,6 @@
         }
 
         function copyLink() {
-            // Czysty link bez parametrów śledzenia (np. z Facebooka)
             const cleanLink = window.location.origin + window.location.pathname;
             navigator.clipboard.writeText(cleanLink).then(() => {
                 const toast = document.getElementById('toast');
@@ -180,11 +196,9 @@
                     setTimeout(() => { toast.style.display = 'none'; }, 300);
                 }, 2000);
             }).catch(() => {
-                // Alternatywa, gdyby Clipboard API zawiodło na starszych telefonach
                 alert("Link: " + cleanLink);
             });
         }
     </script>
-
 </body>
 </html>
