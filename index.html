@@ -96,11 +96,10 @@
                 align-items: flex-start;
                 padding: 10px 15px;
                 gap: 10px;
-                height: auto; /* Pozwalamy paskowi rosnąć w pionie na telefonie */
+                height: auto;
             }
             .map-wrapper {
-                height: auto; /* Dynamiczne dopasowanie na telefonie */
-                flex: 1;
+                height: calc(100vh - 100px); /* Dostosowanie pod wyższy pasek mobilny */
             }
             .title { font-size: 13px; }
             .button-group { width: 100%; }
@@ -119,6 +118,8 @@
             border-radius: 30px;
             font-size: 12px;
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
             z-index: 2000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
@@ -129,10 +130,12 @@
     <div class="top-bar">
         <div class="title">Mapa KDP i drogi S10 w regionie płockim</div>
         <div class="button-group">
+            <!-- Przycisk kopiowania adresu strony -->
             <button onclick="copyLink()" class="btn btn-copy">
                 <span>🔗</span> Kopiuj link
             </button>
-            <a href="kdp-i-droga-s10-plock-2026.webp" download="Mapa-S10-KDP-Plock.webp" class="btn btn-download">
+            <!-- Link do pobrania pliku z Twojego repozytorium -->
+            <a href="kdp-i-droga-s10-plock-2026.webp" download="kdp-i-droga-s10-plock-2026.webp" class="btn btn-download">
                 Pobierz mapę (WEBP)
             </a>
         </div>
@@ -173,10 +176,17 @@
         }
 
         function copyLink() {
-            navigator.clipboard.writeText(window.location.href);
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+            // Kopiuje aktualny adres URL strony
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                setTimeout(() => { toast.style.opacity = '1'; }, 10);
+                
+                setTimeout(() => { 
+                    toast.style.opacity = '0';
+                    setTimeout(() => { toast.style.display = 'none'; }, 300);
+                }, 2000);
+            });
         }
     </script>
 
