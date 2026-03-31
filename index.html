@@ -127,10 +127,10 @@
             <button onclick="copyLink()" class="btn btn-copy">
                 <span>🔗</span> Kopiuj link
             </button>
-            <!-- Zmieniony przycisk pobierania na wywołanie funkcji JS -->
-            <button onclick="downloadMap()" class="btn btn-download">
+            <!-- Powrót do standardowego linku (najbezpieczniejszy na mobilu) -->
+            <a href="kdp-i-droga-s10-plock-2026.webp" download="kdp-i-droga-s10-plock-2026.webp" class="btn btn-download">
                 Pobierz mapę (WEBP)
-            </button>
+            </a>
         </div>
     </div>
 
@@ -169,7 +169,7 @@
         }
 
         function copyLink() {
-            // Kopiuje czysty link bez parametrów śledzenia (np. z Facebooka)
+            // Czysty link bez parametrów śledzenia (np. z Facebooka)
             const cleanLink = window.location.origin + window.location.pathname;
             navigator.clipboard.writeText(cleanLink).then(() => {
                 const toast = document.getElementById('toast');
@@ -179,28 +179,10 @@
                     toast.style.opacity = '0';
                     setTimeout(() => { toast.style.display = 'none'; }, 300);
                 }, 2000);
+            }).catch(() => {
+                // Alternatywa, gdyby Clipboard API zawiodło na starszych telefonach
+                alert("Link: " + cleanLink);
             });
-        }
-
-        async function downloadMap() {
-            const fileName = 'kdp-i-droga-s10-plock-2026.webp';
-            try {
-                const response = await fetch(fileName);
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName; // Wymusza zapisanie pliku
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            } catch (err) {
-                console.error('Błąd pobierania:', err);
-                // W razie błędu otwórz w nowym oknie (fallback)
-                window.open(fileName, '_blank');
-            }
         }
     </script>
 
